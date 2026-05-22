@@ -6,6 +6,7 @@ import {
   expressionTreeToString,
   evaluateExpressionTree,
 } from './mathExpression';
+import { API_URL } from "./config";
 
 function Calculator() {
   const [expression, setExpression] = useState(''); // Full expression being built
