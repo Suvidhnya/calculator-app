@@ -49,6 +49,7 @@
   border-radius: 12px;
   margin-bottom: 15px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 }
 
 .expression-display {
@@ -108,18 +109,91 @@
 /* Buttons Grid */
 .buttons-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-history-toggle {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.18) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-weight: 700;
+}
+
+.btn-zero {
+  grid-column: span 2;
+}
+
+.history-panel {
+  margin-top: 15px;
+  border-radius: 16px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.history-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.history-expression,
+.history-result {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.history-result {
+  font-weight: 700;
+  text-align: right;
+}
+
+.history-empty {
+  color: rgba(255, 255, 255, 0.75);
+  padding: 14px 10px;
+  text-align: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .btn {
-  padding: 18px;
+  padding: 14px;
   border: none;
   border-radius: 10px;
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -172,6 +246,18 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+.btn-percent {
+  background: linear-gradient(135deg, #ff9500 0%, #ff6b00 100%);
+  color: white;
+  border: none;
+  font-weight: 700;
+}
+
+.btn-percent:hover {
+  background: linear-gradient(135deg, #ffb143 0%, #ff8c00 100%);
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+}
+
 /* Equals Button */
 .btn-equals {
   background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
@@ -183,6 +269,13 @@
 .btn-equals:hover {
   background: linear-gradient(135deg, #66bb6a 0%, #56bb4d 100%);
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.btn-spacer {
+  visibility: hidden;
+  pointer-events: none;
+  background: transparent;
+  border: none;
 }
 
 @media (max-width: 500px) {
@@ -197,7 +290,7 @@
   }
 
   .btn {
-    padding: 15px;
+    padding: 12px;
     font-size: 16px;
   }
 
@@ -216,6 +309,6 @@
   }
 
   .buttons-grid {
-    gap: 10px;
+    gap: 8px;
   }
 }

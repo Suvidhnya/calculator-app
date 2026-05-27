@@ -13,6 +13,7 @@ function Calculator() {
   const [error, setError] = useState('');
   const [displayExpression, setDisplayExpression] = useState('');
   const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
     const savedHistory = localStorage.getItem('calculatorHistory');
@@ -37,6 +38,42 @@ function Calculator() {
 
       return updatedHistory;
     });
+  };
+
+  const handlePercent = () => {
+    setError('');
+
+    if (currentInput !== '') {
+      const val = parseFloat(currentInput);
+      if (isNaN(val)) return;
+      const pct = val / 100;
+      setCurrentInput(String(pct));
+      // update display if expression exists
+      if (expression) {
+        const trimmedExpr = expression.trim();
+        const lastChar = trimmedExpr[trimmedExpr.length - 1];
+        if (!/[+\-×÷^√]/.test(lastChar)) {
+          setExpression(trimmedExpr + ' + ' + String(pct));
+        } else {
+          setExpression(trimmedExpr + ' ' + String(pct));
+        }
+      } else {
+        setDisplayExpression(String(pct));
+      }
+      return;
+    }
+
+    if (result !== '') {
+      const val = parseFloat(result);
+      if (isNaN(val)) return;
+      const pct = val / 100;
+      setResult(pct);
+      setDisplayExpression(String(pct));
+    }
+  };
+
+  const handleToggleHistory = () => {
+    setShowHistory((s) => !s);
   };
 
   const handleClearHistory = () => {
@@ -466,238 +503,78 @@ function Calculator() {
           )}
         </div>
 
-        <div className="history-panel">
-          <div className="history-header">
-            <h2>History</h2>
+        {showHistory && (
+          <div className="history-panel">
+            <div className="history-header">
+              <h2>History</h2>
 
-            <button
-              className="btn btn-function btn-clear-history"
-              onClick={handleClearHistory}
-            >
-              Clear
-            </button>
-          </div>
-
-          {history.length === 0 ? (
-            <div className="history-empty">
-              No history yet
+              <button
+                className="btn btn-function btn-clear-history"
+                onClick={handleClearHistory}
+              >
+                Clear
+              </button>
             </div>
-          ) : (
-            <ul className="history-list">
-              {history.map((entry, index) => (
-                <li
-                  key={`${entry.timestamp}-${index}`}
-                  className="history-item"
-                >
-                  <span className="history-expression">
-                    {entry.expression}
-                  </span>
 
-                  <span className="history-result">
-                    = {entry.result}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+            {history.length === 0 ? (
+              <div className="history-empty">
+                No history yet
+              </div>
+            ) : (
+              <ul className="history-list">
+                {history.map((entry, index) => (
+                  <li
+                    key={`${entry.timestamp}-${index}`}
+                    className="history-item"
+                  >
+                    <span className="history-expression">
+                      {entry.expression}
+                    </span>
+
+                    <span className="history-result">
+                      = {entry.result}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         <div className="buttons-grid">
           <button
-            className="btn btn-function"
-            onClick={handleClear}
+            className="btn btn-function btn-history-toggle"
+            onClick={handleToggleHistory}
           >
-            AC
+            History
           </button>
+          <button className="btn btn-function" onClick={handleClear}>AC</button>
+          <button className="btn btn-function" onClick={handleDelete}>DEL</button>
+          <div className="btn btn-spacer" aria-hidden="true"></div>
 
-          <button
-            className="btn btn-function"
-            onClick={handleDelete}
-          >
-            DEL
-          </button>
+          <button className="btn btn-function" onClick={handleOpenBracket}>(</button>
+          <button className="btn btn-function" onClick={handleCloseBracket}>)</button>
+          <button className="btn btn-percent" onClick={handlePercent} title="Percent">%</button>
+          <button className="btn btn-operator" onClick={() => handleOperator('/')}>÷</button>
 
-          <button
-            className="btn btn-function"
-            onClick={handleOpenBracket}
-          >
-            (
-          </button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('7')}>7</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('8')}>8</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('9')}>9</button>
+          <button className="btn btn-operator" onClick={() => handleOperator('*')}>×</button>
 
-          <button
-            className="btn btn-function"
-            onClick={handleCloseBracket}
-          >
-            )
-          </button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('4')}>4</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('5')}>5</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('6')}>6</button>
+          <button className="btn btn-operator" onClick={() => handleOperator('-')}>-</button>
 
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('7')
-            }
-          >
-            7
-          </button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('1')}>1</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('2')}>2</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('3')}>3</button>
+          <button className="btn btn-operator" onClick={() => handleOperator('+')}>+</button>
 
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('8')
-            }
-          >
-            8
-          </button>
-
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('9')
-            }
-          >
-            9
-          </button>
-
-          <button
-            className="btn btn-operator"
-            onClick={() =>
-              handleOperator('/')
-            }
-          >
-            ÷
-          </button>
-
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('4')
-            }
-          >
-            4
-          </button>
-
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('5')
-            }
-          >
-            5
-          </button>
-
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('6')
-            }
-          >
-            6
-          </button>
-
-          <button
-            className="btn btn-operator"
-            onClick={() =>
-              handleOperator('*')
-            }
-          >
-            ×
-          </button>
-
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('1')
-            }
-          >
-            1
-          </button>
-
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('2')
-            }
-          >
-            2
-          </button>
-
-          <button
-            className="btn btn-number"
-            onClick={() =>
-              handleNumberClick('3')
-            }
-          >
-            3
-          </button>
-
-          <button
-            className="btn btn-operator"
-            onClick={() =>
-              handleOperator('-')
-            }
-          >
-            -
-          </button>
-
-          <button
-            className="btn btn-number btn-zero"
-            onClick={() =>
-              handleNumberClick('0')
-            }
-          >
-            0
-          </button>
-
-          <button
-            className="btn btn-number"
-            onClick={handleDecimal}
-          >
-            .
-          </button>
-
-          <button
-            className="btn btn-operator"
-            onClick={() =>
-              handleOperator('+')
-            }
-          >
-            +
-          </button>
-
-          <button
-            className="btn btn-equals"
-            onClick={handleEquals}
-          >
-            =
-          </button>
-
-          <button
-            className="btn btn-operator"
-            onClick={() =>
-              handleOperator('^')
-            }
-          >
-            ^
-          </button>
-
-          <button
-            className="btn btn-operator"
-            onClick={() =>
-              handleOperator('sqrt')
-            }
-          >
-            √
-          </button>
-
-          <button
-            className="btn btn-function"
-            style={{ visibility: 'hidden' }}
-          />
-
-          <button
-            className="btn btn-function"
-            style={{ visibility: 'hidden' }}
-          />
+          <button className="btn btn-number btn-zero" onClick={() => handleNumberClick('0')}>0</button>
+          <button className="btn btn-number" onClick={handleDecimal}>.</button>
+          <button className="btn btn-equals" onClick={handleEquals}>=</button>
         </div>
       </div>
     </div>
