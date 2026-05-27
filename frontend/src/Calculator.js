@@ -84,10 +84,23 @@ function Calculator() {
       setResult('');
       setDisplayExpression('');
     } else if (currentInput === '' && expression === '') {
+      if (op === '-') {
+        setCurrentInput('-');
+        setError('');
+        return;
+      }
+
       setError('Please enter a number first');
       return;
     } else if (currentInput === '' && expression !== '') {
       const trimmedExpr = expression.trim();
+
+      if (op === '-' && trimmedExpr.endsWith('(')) {
+        setCurrentInput('-');
+        setError('');
+        return;
+      }
+
       const lastSpaceIdx = trimmedExpr.lastIndexOf(' ');
 
       if (lastSpaceIdx > 0) {

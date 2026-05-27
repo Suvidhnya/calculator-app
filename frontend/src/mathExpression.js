@@ -85,18 +85,55 @@ function tokenize(expression) {
     const char = expression[i];
 
     if (char === ' ') {
-      if (currentNumber) {
+      if (
+        currentNumber &&
+        currentNumber !== '-' &&
+        currentNumber !== '+'
+      ) {
         tokens.push({ type: 'number', value: parseFloat(currentNumber) });
         currentNumber = '';
       }
     } else if (char === '(' || char === ')') {
-      if (currentNumber) {
+      if (
+        currentNumber &&
+        currentNumber !== '-' &&
+        currentNumber !== '+'
+      ) {
         tokens.push({ type: 'number', value: parseFloat(currentNumber) });
         currentNumber = '';
       }
       tokens.push({ type: char === '(' ? 'lparen' : 'rparen', value: char });
+    } else if (char === '+' || char === '-') {
+      const isUnary =
+        currentNumber === '' &&
+        (tokens.length === 0 ||
+          tokens[tokens.length - 1].type === 'operator' ||
+          tokens[tokens.length - 1].type === 'lparen');
+
+      if (isUnary) {
+        currentNumber = char;
+        continue;
+      }
+
+      if (
+        currentNumber &&
+        currentNumber !== '-' &&
+        currentNumber !== '+'
+      ) {
+        tokens.push({ type: 'number', value: parseFloat(currentNumber) });
+        currentNumber = '';
+      }
+
+      tokens.push({
+        type: 'operator',
+        value: operatorSymbols[char],
+      });
     } else if (operatorSymbols[char]) {
-      if (currentNumber) {
+      if (
+        currentNumber &&
+        currentNumber !== '-' &&
+        currentNumber !== '+'
+      ) {
         tokens.push({ type: 'number', value: parseFloat(currentNumber) });
         currentNumber = '';
       }
